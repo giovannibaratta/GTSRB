@@ -10,3 +10,5 @@ Per poter utilizzare i notebook bisogna caricare su google driver le immagini pe
 	        ├─ test
 	        ├─ training
 	        └── validation
+
+Per generare i dati utilizzare ***dataJoiner.py*** e ***dataJoinerTestData.py*** contenuti in script.
