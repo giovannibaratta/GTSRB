@@ -1,21 +1,59 @@
 import tensorflow as tf
 import numpy as np
+import CommonUtils as utils
 from colorama import Fore, Style
 
-def testModels(tpu_address, models, weights, testData, testLabels):
+
+def testModel(tpu_address, modelsBuilder, weights, testData):
+  tfVersion = utils.tfVersion()
+  if tfVersion["MAJOR"] > 1:
+    raise NotImplementedError("Training per la versione 2.0 non implementata")
+  else:
+    if tfVersion["MINOR"] > 13:
+      return __testModel114(tpu_address, modelsBuilder, weights, testData)
+    else:
+      return __testModel113(tpu_address, modelsBuilder, weights, testData)
+
+def __testModel114(tpu_address, modelsBuilder, weights, testData):
+  predictions = []
+  for modelIndex in range(len(modelsBuilder)):
+    tf.reset_default_graph() 
+    
+    resolver = tf.contrib.cluster_resolver.TPUClusterResolver(tpu_address)
+    tf.contrib.distribute.initialize_tpu_system(resolver)
+    strategy = tf.contrib.distribute.TPUStrategy(resolver)
+    with strategy.scope():
+      model = modelsBuilder[modelIndex]()
+
+      model.compile(
+          optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), #fake LR
+          loss=tf.keras.losses.sparse_categorical_crossentropy,
+          metrics=['sparse_categorical_accuracy'])
+      
+      for weightIndex in range(len(weights[modelIndex])):
+        print('Test model', modelIndex, 'weights', weightIndex)
+        model.load_weights(weights[modelIndex][weightIndex])
+        predictions.append(model.predict(testData, batch_size = 512, verbose = 1))
+  return predictions
+
+def __testModel113(tpu_address, modelsBuilder, weights, testData):
     predictions = []
-    for modelIndex in range(len(models)):
-        tf.reset_default_graph() 
-        tpu_model_loaded = tf.contrib.tpu.keras_to_tpu_model(
-                            models[modelIndex],
-                            strategy=tf.contrib.tpu.TPUDistributionStrategy(
-                            tf.contrib.cluster_resolver.TPUClusterResolver(tpu_address)))
-        tpu_model_loaded.compile(
-                optimizer=tf.train.AdamOptimizer(learning_rate = 0.001), #fake LR
-                loss=tf.keras.losses.sparse_categorical_crossentropy,
-                metrics=['sparse_categorical_accuracy']
-            )
-        tpu_model_loaded.load_weights(weights[modelIndex])
+    for modelIndex in range(len(modelsBuilder)):
+      tf.reset_default_graph() 
+      tpu_model_loaded = tf.contrib.tpu.keras_to_tpu_model(
+                          modelsBuilder[modelIndex](),
+                          strategy=tf.contrib.tpu.TPUDistributionStrategy(
+                          tf.contrib.cluster_resolver.TPUClusterResolver(tpu_address)))
+
+      tpu_model_loaded.compile(
+              optimizer=tf.train.AdamOptimizer(learning_rate = 0.001), #fake LR
+              loss=tf.keras.losses.sparse_categorical_crossentropy,
+              metrics=['sparse_categorical_accuracy']
+          )
+          
+      for weightIndex in range(len(weights[modelIndex])):
+        print('Test model', modelIndex, 'weights', weightIndex)
+        tpu_model_loaded.load_weights(weights[modelIndex][weightIndex])
         predictions.append(tpu_model_loaded.predict(testData))
     return predictions
 
