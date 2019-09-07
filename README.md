@@ -7,11 +7,12 @@ Per poter utilizzare i notebook bisogna caricare su google driver le immagini pe
 	  ├─ script
 	  │	└─ colab
 	  └─ data
-	        ├─ test
-	        ├─ training
-	        └── validation
+	        ├─ samplingN_WxH
+			├─ training
+			└─ validation
+		└─ testWxH
 
-Per generare i dati utilizzare ***dataJoiner.py*** e ***dataJoinerTestData.py*** contenuti in script.
+All'interno della cartella `data` devono essere inserite le immagini per il training, la validation e il testing rispettando la gerarchia. Possono essere inseriti più directory, ognuna contenente dei sampling differenti, `N` è l'indice e viene utilizzato all'interno dei notebook per caricare un particolare sampling, `W` è la larghezza delle immagini e `H` l'altezza. Per generare i dati utilizzare gli script ***dataJoiner.py*** e ***dataJoinerTestData.py*** contenuti in script.
 
 ## Descrizione notebook 
 Tutti i notebook utilizzati condividono la stessa struttura, l'unica differenza sta nei modelli allenati per ogni notebook. Ogni notebook prevede 4 sezioni. 
