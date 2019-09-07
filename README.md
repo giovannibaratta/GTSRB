@@ -46,3 +46,11 @@ Raggruppa le immagini di testing in un unico file e produce un array numpy conte
 | targetWidth | Larghezza dell'immagine da utilizzare per il ridimensionamento |
 | targetHeight | Altezza dell'immagine da utilizzare per il ridimensionamento |
 | labelFilePath | File CSV contenente le labels delle immagini di testing |
+
+**script/colab/ModelBuilderUtils.py**
+
+Contiene funzioni di supporto per la definizione di layer e blocchi per i modelli keras. Fornisce la classe `Models` dove aggiungere i modelli e i parametri di training tramite la funzione `addModel(modelName, model, trainingInfo)`
+ 
+**script/colab/TrainingUtils.py**
+
+Contiene funzioni di supporto per il training dei modelli. È possibile allenare utilizzando CPU, GPU e TPU. Non tutte le versioni di tensorflow funzionano correttamente. Per utilizzare la CPU e GPU occorre usare una versione uguale o superiore alla 1.14.X, mentre per le TPU la versione 1.13.X (anche se risulta lentissima su colab), oppure la versione 1.14.X (alcune funzionalità non sono state ancora implementate). Fornisce la classe `TrainingInfo` dove è possibile impostare diverse parametri per il training come numero di epoche, learning rate, batch size, ... .
