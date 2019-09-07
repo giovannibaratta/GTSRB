@@ -13,6 +13,50 @@ Per poter utilizzare i notebook bisogna caricare su google driver le immagini pe
 
 Per generare i dati utilizzare ***dataJoiner.py*** e ***dataJoinerTestData.py*** contenuti in script.
 
+## Descrizione notebook 
+Tutti i notebook utilizzati condividono la stessa struttura, l'unica differenza sta nei modelli allenati per ogni notebook. Ogni notebook prevede 4 sezioni. 
+
+La prima è utilizzata per l'import e la preparazione dell'ambiente di lavoro. È possibile indicare alcuni parametri di lavoro e la directory dove salvare i risultati dei training. 
+
+
+La seconda sezione permette di caricare le immagini di training e validation. È possibile generare nuove immagini a partire dalle originali, tramite i parametri è possibile impostare un seed per la generazione oltre a quante immagini generare. 
+
+La terza sezione prevede la definizioe dei modelli. Per ogni modello va definita una funzione che restituisce una funzione che a sua volta restituisce il modello. Inoltre bisogna definire i parametri di training che dovranno essere utilizzati successivamente.
+
+```python
+def phase1_1D64():
+  def closure():
+    inputs = tf.keras.layers.Input(shape=(width, height, 3), name = "L0_INPUT")
+    layer = buildDenseLayer(inputs, layers = 1, size = 64, regularizers = 0.01, flattenInput = True)
+    outputs = buildDenseSoftmax(layer)
+    return tf.keras.Model(inputs = inputs, outputs = outputs)
+  return (closure, "phase1_1D64")
+  
+  
+trInfo = TrainingInfo.getDefaultTPU(
+    trainingData,
+    trainingLabels,
+    validationData,
+    validationLabels
+)
+
+trInfo.setParameters(
+    learningRateList = [1e-2,1e-3,1e-4,1e-5,1e-6,1e-7],
+    fineTuningIterations = 0,
+    mainEpochs = 50,
+    batchSize = 128,
+    validationFrequency = 1,
+    metrics = ['sparse_categorical_accuracy'],
+    classWeights = None
+)
+```
+
+Infine l'ultima parte è destinata al training dei modelli. Una volta configurate le sezione precedenti è sufficiente eseguire la cella.
+
+Nello specifico, per il training, sono stati creati 5 notebook, `ModelBuildStep1` per i primi esperimenti con i primi modelli,`ModelBuildInception`, `ModelBuildResNet`, `ModelBuildCNN` per provare a migliorare i modelli delle rispettive tipologie ed infine `GroupModel` per il training del modello in due step (classificatore del gruppo + 1 classificatore per ogni gruppo). 
+
+È presente il notebook `ModelTest` per testare i modelli allenati.
+
 ## Descrizione script
 
 **script/dataJoiner.py**
