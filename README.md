@@ -1,7 +1,7 @@
 # GTSRB - Attività progettuale computer vision
-Contiene i notebook e gli script utilizzati per l'attività progettuale per il corso di computer vision.
+All'interno di questo repository è possibile trovare i notebook e gli script sviluppati per l'attività progettuale per il corso di Computer vision and Image processing.
 
-Per poter utilizzare i notebook bisogna caricare su google driver le immagini per il training. Bisogna creare la seguente gerarchia di directory.
+È possibile utilizzare i notebook sia attraverso un runtime locale, sia attraverso un runtime remoto. Nel caso si utilizzi [Colab](https://colab.research.google.com/), verrà utilizzato Google Drive come memoria persistente, per questo motivo è necessario caricare tutti gli scrit e i dataset al suo interno. Per poter utilizzare i notebook bisogna creare la seguente gerarchia di cartella e posizionare i dataset generati dagli script all'interno delle cartelle corrette. La gerarchia da creare è la seguente:
   
 	  root
 	  ├─ script
@@ -12,18 +12,24 @@ Per poter utilizzare i notebook bisogna caricare su google driver le immagini pe
 		│	└─ validation
 		└─ testWxH
 
-All'interno della cartella `data` devono essere inserite le immagini per il training, la validation e il testing rispettando la gerarchia. Possono essere inseriti più directory, ognuna contenente dei sampling differenti, `N` è l'indice e viene utilizzato all'interno dei notebook per caricare un particolare sampling, `W` è la larghezza delle immagini e `H` l'altezza. Per generare i dati utilizzare gli script ***dataJoiner.py*** e ***dataJoinerTestData.py*** contenuti in script.
+All'interno della cartella `data` devono essere inserite le immagini per il training, validation e il testing. Possono essere inseriti più directory, ognuna contenente dei sampling differenti, `N` è l'indice e viene utilizzato all'interno dei notebook per caricare un particolare sampling, `W` è la larghezza delle immagini e `H` l'altezza. Per generare i dati utilizzare gli script ***[dataJoiner.py](https://github.com/giovannibaratta/GTSRB/blob/master/scripts/dataJoiner.py)*** e ***[dataJoinerTestData.py](https://github.com/giovannibaratta/GTSRB/blob/master/scripts/dataJoinerTestData.py])*** contenuti in script. È possibile scaricare il dataset originale sulla quale applicare gli script al seguente link :
+
+[Dataset originale](https://sid.erda.dk/public/archives/daaeac0d7ce1152aea9b61d9f1e19370/published-archive.html)
 
 ## Descrizione notebook 
 Tutti i notebook utilizzati condividono la stessa struttura, l'unica differenza sta nei modelli allenati per ogni notebook. Ogni notebook prevede 4 sezioni. 
 
-La prima è utilizzata per l'import e la preparazione dell'ambiente di lavoro. È possibile indicare alcuni parametri di lavoro e la directory dove salvare i risultati dei training. 
+Nella prima sezione vengono effettuati gli import e la preparazione dell'ambiente di lavoro. È possibile indicare alcuni parametri di lavoro e la directory, il tipo di runtime e dove salvare i risultati dei training. 
 
 <img src="https://github.com/giovannibaratta/GTSRB/blob/master/screenshot/section1.PNG" width="450">
 
-La seconda sezione permette di caricare le immagini di training e validation. È possibile generare nuove immagini a partire dalle originali, tramite i parametri è possibile impostare un seed per la generazione oltre a quante immagini generare. 
+La seconda sezione permette di caricare le immagini di training e validation. Tramite le opzioni messe a disposizione nel form è possibile generare nuove immagini a partire dalle originali. È possibile indicare il numero di immagini da generare agendo sia sul valore globale, sia sulla singola classe. 
 
-La terza sezione prevede la definizioe dei modelli. Per ogni modello va definita una funzione che restituisce una funzione che a sua volta restituisce il modello. Inoltre bisogna definire i parametri di training che dovranno essere utilizzati successivamente.
+<img src="https://github.com/giovannibaratta/GTSRB/blob/master/screenshot/section2.PNG" width="450">
+
+> **NOTE**: Se si utilizzano le TPU presenti in Colab, il numero massimo di immagini utilizzabili è limitato. Nel caso di immagini 48x48 il massimo è circa di 80000.
+
+La terza è dedicata alla definizione dei modelli. Per ogni modello va definita una funzione che restituisce una funzione che a sua volta restituisce il modello. Inoltre bisogna definire i parametri di training che dovranno essere utilizzati successivamente.
 
 ```python
 def phase1_1D64():
@@ -53,11 +59,11 @@ trInfo.setParameters(
 )
 ```
 
-Infine l'ultima parte è destinata al training dei modelli. Una volta configurate le sezione precedenti è sufficiente eseguire la cella.
+Infine l'ultima parte è dedicata al training dei modelli. Una volta configurate le sezione precedenti è sufficiente eseguire la cella, al termine del training verranno salvati i pesi, dei grafici e il log del training all'interno del percorso indicato.
 
-Nello specifico, per il training, sono stati creati 5 notebook, `ModelBuildStep1` per i primi esperimenti con i primi modelli,`ModelBuildInception`, `ModelBuildResNet`, `ModelBuildCNN` per provare a migliorare i modelli delle rispettive tipologie ed infine `GroupModel` per il training del modello in due step (classificatore del gruppo + 1 classificatore per ogni gruppo). 
+Nello specifico, per il training, sono stati creati 5 notebook, `ModelBuildStep1` per gli esperimenti con i primi modelli,`ModelBuildInception`, `ModelBuildResNet`, `ModelBuildCNN` per provare a migliorare i modelli delle rispettive tipologie ed infine `GroupModel` per il training del modello in due step (classificatore del gruppo + 1 classificatore per ogni gruppo). 
 
-È presente il notebook `ModelTest` per testare i modelli allenati.
+Con il notebook `ModelTest` è possibile testare i modelli allenati.
 
 ## Descrizione script
 
