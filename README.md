@@ -19,7 +19,7 @@ Tutti i notebook utilizzati condividono la stessa struttura, l'unica differenza 
 
 La prima è utilizzata per l'import e la preparazione dell'ambiente di lavoro. È possibile indicare alcuni parametri di lavoro e la directory dove salvare i risultati dei training. 
 
-<img src="https://github.com/giovannibaratta/GTSRB/blob/master/screenshot/section1Screenshot.PNG" width="450">
+<img src="https://github.com/giovannibaratta/GTSRB/blob/master/screenshot/section1.PNG" width="450">
 
 La seconda sezione permette di caricare le immagini di training e validation. È possibile generare nuove immagini a partire dalle originali, tramite i parametri è possibile impostare un seed per la generazione oltre a quante immagini generare. 
 
